@@ -16,6 +16,9 @@ namespace SoundHealth
 	{
 		private IWavePlayer? player;
 		private readonly SineWaveProvider sineProvider;
+		private readonly StereoSineWaveProvider stereoSineWaveProvider;
+
+		private readonly ISampleProvider sampleProvider;
 
 		public ICommand PlayCommand { get; private set; }
 		public ICommand PauseCommand { get; private set; }
@@ -27,6 +30,7 @@ namespace SoundHealth
 		public ICommand RAMCommand { get; private set; }
 		public ICommand VAMCommand { get; private set; }
 		public ICommand LAMCommand { get; private set; }
+		public ICommand GammaWave40HzCommand { get; private set; }
 
 		public float Volume
 		{
@@ -34,7 +38,10 @@ namespace SoundHealth
 			set
 			{
 				if (sineProvider.Volume == value)
+				{ 
 					return;
+				}
+
 				sineProvider.Volume = value;
 				OnPropertyChanged(nameof(Volume));
 				OnPropertyChanged(nameof(VolumeLabel));
@@ -51,7 +58,10 @@ namespace SoundHealth
 			set
 			{
 				if (sineProvider.Frequency == value)
+				{ 
 					return;
+				}
+
 				sineProvider.Frequency = value;
 				OnPropertyChanged(nameof(Frequency));
 				OnPropertyChanged(nameof(FrequencyLabel));
@@ -71,8 +81,13 @@ namespace SoundHealth
 			RAMCommand = new RelayCommand(RAMSound);
 			VAMCommand = new RelayCommand(VAMSound);
 			LAMCommand = new RelayCommand(LAMSound);
+			GammaWave40HzCommand = new RelayCommand(GammaWave40Hz);
+
 
 			sineProvider = new SineWaveProvider();
+			stereoSineWaveProvider = new StereoSineWaveProvider();
+
+			sampleProvider = stereoSineWaveProvider;
 		}
 
 
@@ -86,7 +101,7 @@ namespace SoundHealth
 					DesiredLatency = 100
 				};
 				player = waveOutEvent;
-				player.Init(new SampleToWaveProvider(sineProvider));
+				player.Init(new SampleToWaveProvider(sampleProvider));
 			}
 
 			player.Play();
@@ -107,7 +122,7 @@ namespace SoundHealth
 
 		private void LAMSound()
 		{
-			Frequency = 369.0;
+			Frequency = 396.0;
 		}
 		private void VAMSound()
 		{
@@ -132,6 +147,11 @@ namespace SoundHealth
 		private void AUMSound()
 		{
 			Frequency = 932.0;
+		}
+
+		private void GammaWave40Hz()
+		{
+			Frequency = 40.0;
 		}
 
 

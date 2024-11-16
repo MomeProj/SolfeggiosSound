@@ -124,7 +124,12 @@
 				Width="80"
 				Margin="5"
 				Command="{Binding LAMCommand}"
-				Content="LAM (369Hz)" />
+				Content="LAM (396Hz)" />
+			<Button
+				Width="80"
+				Margin="5"
+				Command="{Binding GammaWave40HzCommand}"
+				Content="M (40Hz)" />
 		</StackPanel>
 	</Grid>
 </Window>

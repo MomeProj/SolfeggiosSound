@@ -21,8 +21,11 @@ namespace SoundHealth
 		{
 			WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, 1);
 			waveTable = new float[sampleRate];
+
 			for (int index = 0; index < sampleRate; ++index)
+			{ 
 				waveTable[index] = (float)Math.Sin(2 * Math.PI * (double)index / sampleRate);
+			}
 			// For sawtooth instead of sine: waveTable[index] = (float)index / sampleRate;
 			Frequency = 932f;
 			Volume = 0.25f;
@@ -57,23 +60,37 @@ namespace SoundHealth
 				phaseStepDelta = (targetPhaseStep - currentPhaseStep) / (WaveFormat.SampleRate * PortamentoTime);
 				seekFreq = false;
 			}
+
 			var vol = Volume; // process volume change only once per call to Read
+
 			for (int n = 0; n < count; ++n)
 			{
 				int waveTableIndex = (int)phase % waveTable.Length;
+
 				buffer[n + offset] = waveTable[waveTableIndex] * vol;
+
 				phase += currentPhaseStep;
+
 				if (phase > waveTable.Length)
+				{ 
 					phase -= waveTable.Length;
+				}
+
 				if (currentPhaseStep != targetPhaseStep)
 				{
 					currentPhaseStep += phaseStepDelta;
+
 					if (phaseStepDelta > 0.0 && currentPhaseStep > targetPhaseStep)
+					{ 
 						currentPhaseStep = targetPhaseStep;
+					}
 					else if (phaseStepDelta < 0.0 && currentPhaseStep < targetPhaseStep)
+					{ 
 						currentPhaseStep = targetPhaseStep;
+					}
 				}
 			}
+
 			return count;
 		}
 	}
